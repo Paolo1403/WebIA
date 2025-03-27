@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Création de Site Web</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: auto;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Créer votre site web</h2>
+        <form id="siteForm">
+            <label for="type">Choisissez un type de site :</label>
+            <select id="type" name="type" required>
+                <option value="ecommerce">E-commerce</option>
+                <option value="blog">Blog</option>
+                <option value="portfolio">Portfolio</option>
+            </select>
+            <br><br>
+            <button type="button" id="payButton">Payer 300€</button>
+        </form>
+    </div>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        var stripe = Stripe('VOTRE_CLE_PUBLIC_STRIPE');
+        var payButton = document.getElementById('payButton');
+
+        payButton.addEventListener('click', function () {
+            fetch('/create-checkout-session', { method: 'POST' })
+                .then(response => response.json())
+                .then(session => {
+                    return stripe.redirectToCheckout({ sessionId: session.id });
+                })
+                .then(result => {
+                    if (result.error) {
+                        alert(result.error.message);
+                    }
+                })
+                .catch(error => console.error('Erreur:', error));
+        });
+    </script>
+</body>
+</html>
+
+
